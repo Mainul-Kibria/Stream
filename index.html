@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!-- DEUKS PRO GLASS ULTRA 2026 - GOD TIER FINAL - CROPPING FIXED + HELL-LEVEL OPTIMIZED -->
+<!-- Base = your last perfect spacer version • Fixed bottom cropping on new messages (they now appear 100% whole) -->
+<!-- Ultra-max optimization: minimal DOM reads, single RAF, zero waste, lowest possible CPU on low-end PC -->
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deuks Pro Ultra • God Tier Chat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300..800&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent !important;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        #chat-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            overflow: hidden;
+            padding: 28px 28px 50px;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        #message-list-wrapper {
+            width: 100%;
+            transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+        }
+
+        #spacer {
+            width: 100%;
+            height: 2200px;
+            transition: none;
+        }
+
+        .message-container {
+            position: relative;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: scale(0.88) translateY(42px);
+            transition: opacity 0.75s cubic-bezier(0.23, 1, 0.32, 1),
+                        transform 0.75s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform, opacity;
+            overflow: visible;
+        }
+
+        .message-container.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .message {
+            display: inline-block;
+            max-width: 98%;
+            background: rgba(23, 25, 28, 0.28);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 26px 16px 12px 16px;
+            margin-left: 62px;
+            color: rgba(245, 245, 245, 0.98);
+            border-radius: 16px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            word-wrap: break-word;
+            overflow: visible;
+        }
+
+        .avatar-wrapper {
+            position: absolute;
+            left: 0;
+            top: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: linear-gradient(145deg, #00c6ff, #00ff9d);
+            padding: 3px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.38);
+            z-index: 3;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .username-box {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 7px;
+            position: absolute;
+            top: -20px;
+            left: 0;
+            padding: 7px 14px;
+            color: #f0f4ff;
+            font-weight: 700;
+            background: rgba(15, 25, 48, 0.68);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 10px;
+            z-index: 4;
+            white-space: nowrap;
+            max-width: 380px !important;
+            overflow: visible !important;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(0, 180, 255, 0.12),
+                        0 2px 8px rgba(0,0,0,0.3);
+            font-size: 0.97em;
+            line-height: 1;
+            border: 1px solid rgba(100, 200, 255, 0.22);
+        }
+
+        .source-icon { height: 1.1em; margin-right: 3px; vertical-align: middle; }
+        .badges { display: inline-flex; align-items: center; gap: 5px; }
+        .badge { height: 1em; width: auto; vertical-align: middle; }
+
+        .text {
+            font-size: clamp(0.9em, 2.5vw, 1.04em);
+            line-height: 1.45;
+            margin-top: 3px;
+        }
+
+        .text img { max-width: 1.7em; max-height: 1.7em; vertical-align: middle; }
+
+        .donation {
+            color: #4aff6f;
+            font-weight: 700;
+            margin-top: 9px;
+            font-size: 1.04em;
+            text-shadow: 0 0 6px rgba(74,255,111,0.5);
+        }
+
+        .event-message {
+            background: rgba(50, 50, 70, 0.48);
+            backdrop-filter: blur(4px);
+            padding: 13px 18px;
+            border-radius: 14px;
+            color: #ffeb3b;
+            font-weight: 700;
+            margin: 14px 0;
+            opacity: 0;
+            transform: translateY(22px);
+            animation: slideFadeInEvent 0.65s ease forwards;
+        }
+
+        @keyframes slideFadeInEvent {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-container.fading {
+            opacity: 0.12;
+            transition: opacity 1.7s ease-out;
+        }
+
+        .content-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 12px;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="message-list-wrapper">
+            <div id="spacer"></div>
+        </div>
+    </div>
+
+<script>
+    // ────────────────────────────────────────────────
+    //  GOD-TIER ULTRA-MAX OPTIMIZED - ZERO WASTE - NO BOTTOM CROPPING
+    // ────────────────────────────────────────────────
+    const chatContainer = document.getElementById('chat-container');
+    const wrapper = document.getElementById('message-list-wrapper');
+    const spacer = document.getElementById('spacer');
+
+    let lastSender = null;
+    let lastMessageDiv = null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomID = urlParams.get("session") || "7RUWtGBfz2";
+    const password = "false";
+    const featuredMode = false;
+
+    let showtime = urlParams.has("showtime") ? parseInt(urlParams.get("showtime")) : 30000;
+    const messageTimestamps = new Map();
+    const MAX_MESSAGES = 18;
+
+    function applyOverlaySize() {
+        const size = urlParams.get('size');
+        document.body.classList.remove("small-overlay", "large-overlay");
+        if (size === "small") document.body.classList.add("small-overlay");
+        if (size === "large") document.body.classList.add("large-overlay");
+    }
+
+    function adjustTransform() {
+        const totalH = wrapper.scrollHeight;
+        const containerH = chatContainer.clientHeight;
+        wrapper.style.transform = `translateY(${Math.min(0, containerH - totalH)}px)`;
+    }
+
+    function addMessageToOverlay(data) {
+        if (!data || !data.chatname || !data.chatmessage) return;
+
+        if (['follow', 'subscription', 'donation'].includes(data.type)) {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event-message';
+            let txt = `${data.chatname} `;
+            if (data.type === 'follow') txt += 'followed!';
+            else if (data.type === 'subscription') txt += 'subbed!';
+            else txt += `donated ${data.donation || data.amount || ''}!`;
+            eventDiv.textContent = txt;
+            wrapper.appendChild(eventDiv);
+            eventDiv.style.opacity = 1;
+            adjustTransform();
+            return;
+        }
+
+        const messageContainer = document.createElement('div');
+        messageContainer.className = 'message-container';
+
+        const messageId = data.mid || 'msg-' + Date.now();
+        messageContainer.id = messageId;
+        messageTimestamps.set(messageId, Date.now());
+
+        const avatarHtml = data.chatimg ? `
+            <div class="avatar-wrapper">
+                <div class="avatar" style="background-image:url('${data.chatimg}')"></div>
+            </div>` : '';
+
+        let sourceIcon = data.type ? 
+            `<img src="https://socialstream.ninja/sources/images/${data.type}.png" class="source-icon" onerror="this.remove()">` : '';
+
+        let chatbadges = "";
+        if (data.chatbadges) {
+            data.chatbadges.slice(0,4).forEach(b => {
+                if (b.type === "img" && b.src) chatbadges += `<img class="badge" src="${b.src}">`;
+                else if (b.type === "svg") chatbadges += `<span class="badge">${b.html}</span>`;
+            });
+        }
+
+        const messageHTML = `
+            ${avatarHtml}
+            <div class="message">
+                <div class="username-box">
+                    ${sourceIcon}
+                    <span>${data.chatname}</span>
+                    <span class="badges">${chatbadges}</span>
+                </div>
+                <div class="text">${data.chatmessage}</div>
+                ${(data.donation || data.hasDonation) ? `<div class="donation">${data.donation || data.hasDonation}</div>` : ''}
+                ${data.contentimg ? `<img src="${data.contentimg}" class="content-image" onerror="this.style.display='none'">` : ''}
+            </div>
+        `;
+
+        messageContainer.innerHTML = messageHTML;
+
+        if (lastSender === data.chatname && lastMessageDiv) {
+            const bubble = lastMessageDiv.querySelector('.message');
+            const newText = document.createElement('div');
+            newText.className = 'text';
+            newText.innerHTML = data.chatmessage;
+            bubble.appendChild(newText);
+            if (data.contentimg) {
+                const img = document.createElement('img');
+                img.src = data.contentimg;
+                img.className = 'content-image';
+                img.onerror = () => img.style.display = 'none';
+                bubble.appendChild(img);
+            }
+        } else {
+            wrapper.appendChild(messageContainer);
+            adjustTransform();                     // ← adjust FIRST
+            requestAnimationFrame(() => {          // ← show animation in next frame (prevents bottom crop)
+                messageContainer.classList.add('visible');
+            });
+            lastSender = data.chatname;
+            lastMessageDiv = messageContainer;
+        }
+
+        // Limit handling
+        const messages = wrapper.querySelectorAll('.message-container');
+        if (messages.length > MAX_MESSAGES) {
+            const oldest = messages[0];
+            if (oldest) {
+                const space = oldest.offsetHeight + 20;
+                spacer.style.height = (parseFloat(spacer.style.height) || 0) + space + 'px';
+                messageTimestamps.delete(oldest.id);
+                wrapper.removeChild(oldest);
+            }
+        }
+
+        adjustTransform();
+    }
+
+    // Ultra-light auto-fade
+    setInterval(() => {
+        if (showtime <= 0) return;
+        const now = Date.now();
+        Array.from(wrapper.children).forEach(msg => {
+            if (!msg.classList.contains('message-container')) return;
+            const ts = messageTimestamps.get(msg.id);
+            if (ts && now - ts > showtime && !msg.classList.contains('fading')) {
+                msg.classList.add('fading');
+                setTimeout(() => {
+                    if (msg.parentNode) {
+                        const space = msg.offsetHeight + 20;
+                        spacer.style.height = (parseFloat(spacer.style.height) || 0) + space + 'px';
+                        messageTimestamps.delete(msg.id);
+                        wrapper.removeChild(msg);
+                        adjustTransform();
+                    }
+                }, 1700);
+            }
+        });
+    }, 900);
+
+    // ────────────────────────────────────────────────
+    //                  CONNECTION
+    // ────────────────────────────────────────────────
+    const iframe = document.createElement("iframe");
+    iframe.src = featuredMode 
+        ? `https://vdo.socialstream.ninja/?ln&password=${password}&salt=vdo.ninja&label=overlay&exclude=${roomID}&scene&novideo&noaudio&cleanoutput&room=${roomID}`
+        : `https://vdo.socialstream.ninja/?ln&salt=vdo.ninja&password=${password}&push&label=dock&vd=0&ad=0&novideo&noaudio&autostart&cleanoutput&room=${roomID}`;
+    iframe.style.cssText = "width:0;height:0;position:fixed;left:-9999px;top:-9999px;";
+    document.body.appendChild(iframe);
+
+    window.addEventListener("message", e => {
+        if (e.source !== iframe.contentWindow) return;
+        if (e.data?.dataReceived?.overlayNinja) addMessageToOverlay(e.data.dataReceived.overlayNinja);
+    });
+
+    var conCon = 1;
+    var socketserver = false;
+    var serverURL = urlParams.has("localserver") ? "ws://127.0.0.1:3000" : "wss://io.socialstream.ninja";
+
+    function setupSocket(){
+        socketserver.onclose = () => setTimeout(()=>{ conCon++; socketserver = new WebSocket(serverURL); setupSocket(); }, 120*conCon);
+        socketserver.onopen = () => { conCon=1; socketserver.send(JSON.stringify({"join":roomID,"out":3,"in":4})); };
+        socketserver.addEventListener('message', event => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data) addMessageToOverlay(data);
+            } catch {}
+        });
+    }
+
+    if (urlParams.has("server") || urlParams.has("server2")){
+        serverURL = urlParams.get("server") || urlParams.get("server2") || serverURL;
+        socketserver = new WebSocket(serverURL);
+        setupSocket();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        applyOverlaySize();
+        adjustTransform();
+    });
+</script>
+</body>
+</html>
